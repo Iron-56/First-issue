@@ -1,0 +1,24 @@
+name: Auto Merge PR
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  pull_request_target:
+    types: [opened, ready_for_review]
+
+jobs:
+  merge-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge PR immediately
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_MERGE }}
+        run: |
+          echo "Merging PR #${{ github.event.pull_request.number }} automatically"
+          gh pr merge ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --merge \
+            --auto \
+            --delete-branch
